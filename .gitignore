@@ -1,7 +1,6 @@
 # MPLAB X build artifacts
 build/
 dist/
-nbproject/private/
 *.d
 *.p1
 *.i
@@ -54,3 +53,4 @@ __pycache__/
 *.log
 *.zip
 nbproject/Makefile-genesis.properties
+**/nbproject/private/
