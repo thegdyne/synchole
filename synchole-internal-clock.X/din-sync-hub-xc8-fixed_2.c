@@ -89,7 +89,7 @@ volatile byte timerTicked = 0;		// Timer ticked flag (tick once per ms)
 // 120 BPM = 120 beats/min = 2 beats/sec
 // At 24 PPQN = 48 pulses/sec
 // Period = 1000ms / 48 = 20.833ms per pulse
-#define INTERNAL_CLOCK_PERIOD_MS 21
+#define INTERNAL_CLOCK_PERIOD_MS 20  // 125 BPM
 
 // Mode definitions
 #define MODE_EXTERNAL_MIDI 0

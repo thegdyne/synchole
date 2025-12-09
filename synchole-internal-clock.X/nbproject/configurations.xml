@@ -17,7 +17,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>din-sync-hub-xc8-fixed_2.c</itemPath>
+      <itemPath>din-sync-hub-xc8-robust-switching.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

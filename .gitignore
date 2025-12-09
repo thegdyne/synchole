@@ -54,3 +54,12 @@ __pycache__/
 *.zip
 nbproject/Makefile-genesis.properties
 **/nbproject/private/
+
+# BPM build artifacts
+bpm-builds/
+*.original
+*.test
+*.bak
+
+# Synchole complete HTML (generated, not source)
+synchole-internal-clock.X/synchole-complete.html
