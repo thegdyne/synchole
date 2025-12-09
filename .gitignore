@@ -1,68 +1,54 @@
-*.tmp
-*.jbf
+# MPLAB X build artifacts
+build/
+dist/
+nbproject/private/
+*.d
+*.p1
+*.i
+*.pre
+*.sym
+*.obj
+*.o
+*.elf
+*.map
+*.hex
+*.hxl
+*.lst
+*.cod
+*.sdb
+*.mum
+*.rlf
+*.cmf
 
-# EAGLE
+# Generated SysEx files
+*.syx
 
-*.b#1
-*.b#2
-*.b#3
-*.b#4
-*.b#5
-*.b#6
-*.b#7
-*.b#8
-*.b#9
-*.b##
-*.s#1
-*.s#2
-*.s#3
-*.s#4
-*.s#5
-*.s#6
-*.s#7
-*.s#8
-*.s#9
-*.s##
-
-# GERBER
-
-*.GBL
-*.GBO
-*.GBS
-*.gpi
-*.dri
-*.GTL
-*.GTO
-*.GTP
-*.GTS
-*.TXT
-*.GM1
-*.GBP
-
-
-
-############
-## Windows
-############
-
-# Windows image file caches
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Folder config file
-Desktop.ini
+# Editor backup files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 
-##############
-## Sourceboost
-##############
-*.asm
-*.brws
-*.casm
-*.cof
-*.lst
-*.map
-*.obj
-*.stat
-*.tree
-makefile.*
-MIDI-Hub.hex
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
