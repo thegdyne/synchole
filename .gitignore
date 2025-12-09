@@ -62,4 +62,3 @@ bpm-builds/
 *.bak
 
 # Synchole complete HTML (generated, not source)
-synchole-internal-clock.X/synchole-complete.html
