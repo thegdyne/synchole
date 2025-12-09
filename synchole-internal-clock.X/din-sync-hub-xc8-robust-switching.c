@@ -29,7 +29,7 @@
 // 1 19Nov15 Initial Version
 // 2 12Dec15 New PCB - output pins switched
 // 3 14Aug16 Initial release version - switch added
-// 4 09Dec25 Internal clock feature added - XC8 port
+// 4 09Dec25 Internal clock feature - improved mode switching
 //
 ////////////////////////////////////////////////////////////
 
@@ -350,6 +350,7 @@ void main()
 	int debounce = 0;
 	int longPressCounter = 0;
 	byte switchWasPressed = 0;
+	byte modeChangeLocked = 0;  // Prevents multiple mode toggles during one press
 	
 	// loop forever		
 	while(1)
@@ -392,6 +393,7 @@ void main()
 					switchWasPressed = 1;
 					longPressCounter = 0;
 					debounce = SWITCH_DEBOUNCE_MS;
+					modeChangeLocked = 0;  // Reset lock for new press
 				}
 				else if(debounce > 0) {
 					// Debouncing
@@ -401,49 +403,72 @@ void main()
 					// Switch is held down after debounce
 					++longPressCounter;
 					
-					// Check for long press (2 seconds)
-					if(longPressCounter >= LONG_PRESS_TIME_MS) {
-						// Long press detected - toggle mode
+					// Check for long press (2 seconds) - only trigger once
+					if(longPressCounter >= LONG_PRESS_TIME_MS && !modeChangeLocked) {
+						// Long press detected - toggle mode (LOCKED to prevent multiple triggers)
+						modeChangeLocked = 1;
+						
+						// Stop running when changing modes
+						if(bRunning) {
+							P_RUN = 0;
+							bRunning = 0;
+						}
+						
+						// Toggle mode
 						if(bClockMode == MODE_EXTERNAL_MIDI) {
 							bClockMode = MODE_INTERNAL_CLOCK;
-							// Flash both LEDs to indicate mode change
-							P_LED1 = 1;
-							P_LED2 = 1;
 						} else {
 							bClockMode = MODE_EXTERNAL_MIDI;
-							// Flash both LEDs to indicate mode change
-							P_LED1 = 1;
-							P_LED2 = 1;
 						}
 						
 						// Reset counters
 						bInternalClockCounter = 0;
 						bModeLEDCounter = 0;
+						bBeatCount = 0;
 						
-						// Wait for release
-						longPressCounter = LONG_PRESS_TIME_MS + 1000;  // prevent re-trigger
+						// Set both LEDs solid as feedback (will stay solid while holding)
+						P_LED1 = 1;
+						P_LED2 = 1;
 					}
 				}
 			}
 			else {
 				// Switch is released (active LOW, so P_SWITCH = 1 when released)
-				if(switchWasPressed && longPressCounter < LONG_PRESS_TIME_MS && debounce == 0) {
+				
+				// Check if this was a mode change (long press)
+				if(modeChangeLocked) {
+					// Mode was changed - set LEDs to new mode state
+					if(bClockMode == MODE_EXTERNAL_MIDI) {
+						// External mode - LEDs off until MIDI arrives
+						P_LED1 = 0;
+						P_LED2 = 0;
+					} else {
+						// Internal mode - ACT pulses, BEAT off
+						P_LED1 = 1;  // Will be controlled by pulse logic
+						P_LED2 = 0;
+					}
+				}
+				// Check if this was a short press (start/stop)
+				else if(switchWasPressed && longPressCounter < LONG_PRESS_TIME_MS && debounce == 0) {
 					// Short press detected - toggle run/stop
 					if(bRunning) {
 						P_RUN = 0;					
 						bRunning = 0;
-						bInternalClockCounter = 0;  // reset internal clock counter
+						bInternalClockCounter = 0;
 					}
 					else {
 						P_RUN = 1;					
 						bRunning = 1;
 						bBeatCount = 0;
 						bBeatLEDCount = BEATLED_HIGH_TIME;
-						bInternalClockCounter = 0;  // reset internal clock counter
+						bInternalClockCounter = 0;
 					}
 				}
+				
+				// Reset press tracking
 				switchWasPressed = 0;
 				longPressCounter = 0;
+				modeChangeLocked = 0;
 			}
 		}
 	}
