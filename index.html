@@ -263,6 +263,157 @@
         }
         
         .downloading { animation: pulse 1s infinite; }
+        
+        .restore-section {
+            background: rgba(255,0,0,0.05);
+            border: 2px solid rgba(255,0,0,0.3);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .restore-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .restore-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .restore-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .restore-btn {
+            padding: 20px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(255,183,0,0.2);
+            color: var(--accent-amber);
+            border: 2px solid var(--accent-amber);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .restore-btn:hover {
+            background: var(--accent-amber);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restore-btn:disabled {
+            background: var(--border);
+            color: var(--text-secondary);
+            border-color: var(--border);
+            cursor: not-allowed;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .control-section {
+                padding: 25px;
+            }
+            
+            .bpm-display {
+                font-size: 4rem;
+            }
+            
+            .bpm-label {
+                font-size: 0.75rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .download-btn, .restore-btn {
+                padding: 20px;
+                font-size: 1rem;
+            }
+            
+            .info-text {
+                font-size: 0.75rem;
+            }
+            
+            .restore-section {
+                padding: 20px;
+            }
+            
+            .restore-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .panel {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            
+            .control-section {
+                padding: 20px;
+            }
+            
+            .bpm-display {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            
+            .bpm-slider::-webkit-slider-thumb {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .bpm-slider::-moz-range-thumb {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .download-btn, .restore-btn {
+                padding: 15px;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -272,6 +423,19 @@
                 <h1>SYNCHOLE</h1>
                 <div class="subtitle">Firmware Library v1.0</div>
             </div>
+            
+            <div class="restore-section" id="restoreSection">
+                <div class="restore-icon">⚠️</div>
+                <div class="restore-title">Restore Original Firmware</div>
+                <div class="restore-text">
+                    This page contains modified firmware with internal clock mode.<br>
+                    Click below to download the original SYNCHOLE firmware v3.0.
+                </div>
+                <button class="restore-btn" id="restoreBtn">
+                    DOWNLOAD ORIGINAL v3.0
+                </button>
+            </div>
+            
             
             <div class="control-section">
                 <div class="bpm-display" id="bpmDisplay">120</div>
@@ -570,6 +734,9 @@
         "9": "8AB/FAFRJ39/f39/fyh+YwBgAAEGYAABBzoLUA1QDlA5YAUAIPfwAH8UAgEVYAEBKAYjOgNQF1AYUB8QJzIDUBxQHVAfYAEPIgYj9/AAfxQDOgNQI1AkUDgQJzoDUChQKVA4YAEPIGAAeyFgAQQhYXT38AB/FAQyAwQgOANQNVA2UDgDIAMhIgsAIDoRUD1QPlBCACIgDPfwAH8UBQAgIhE4EVBFUEZQSCAYIBE9EVBLUExRJQAjEBkBdAAg9/AAfxQGECM6A1BUUFVRJFEWACIoDAAgMBhQXFBdUGJhCAF1YBP38AB/FAcBdlBxIBgQFwFzEBYBchBzAXEQcgFwbXEZcBBwAXUQcffwAH8UCAF2EHYAJQESEHUBEQAgAxYDFygYYAEPJmAYDCY6A1EB9/AAfxQJUQJRBQMmYB4BJGABASVRJAAiKQwAIAMmYAEBJ2AeAST38AB/FApRJAAiIQwAIAMnUSQQdHV4MgNQVnQCMgNRCHQBMgNRCPfwAH8UC3QHMgNREVEkJREgfgAJUSgAIAMgAyEDIgMjAyQDJQMm9/AAfxQMAycDKCB+ACBRNWB6ACEBGQAiLx0qHWAgACEBDAAjAwz38AB/FA0AIAMMACElFSMVEBVzeHADARUtCyILYD8AIAsYEBhzT/fwAH8UDnAgARgiGAMWAxcgEQAhKBEAICgYACUQE3NwcAoBEwAh9/AAfxQPKhEvCy4LYwJEC2MAACIsDCoMYAYAIAEqYBMBKWEtFwn38AB/FBBRbxcpUW8XKlFvZAAAIiQMIgxgBgAgASpgEwEpYS0XCffwAH8UEVF/FylRfxcqUX9kAAAiLAwqDGAGACABKmATASlhLRcJ9/AAfxQSUg8XKVIPFypSD2QAACIkDCIMACADKwMsAy0DLgMvAzD38AB/FBMAIBAoMgNSJVImUiADKBAjOgNSK1IsUjYQJToDUjBSM/fwAH8UFAAiLAxSNQAiJAxSSxAnOgNSOlI7UklgAAQhYXoyAwQg9/AAfxQVOANSQ1JGACIsDFJIACIkDFJLACIkDAAgECcyA1JQUlH38AB/FBZSWxAkOgNSVVJYACIqDFJaACIiDFJdACIiDAAgECUyA/fwAH8UF1JiUmNSZWABBSUQJDIDUmlSalJsYAEFJDMMUm9ScFNF9/AAfxQYEC86A1J0UnVSfmABAS8DLQMuYDIBK2AAASxSHxAsdQD38AB/FBkBKWEABCk6A1MHYAEEKzgDUwpTC1MRYX8AIA8rYX97LPfwAH8UGlIgYAEAIA8tYAB7LhAudQABKWEHBCk6A1MfYVAELTgD9/AAfxQbUyJTI1IgACAQMDoDUyhTKVIgYAEBMBAnMgNTL1MwUzT38AB/FBwAIiEMACADJxAjOgNTOFM5UzxgAQEjUz0DIwMiAyADIffwAH8UHQMmACIsDCoMUiAQMDIDU0lTSlNXECM6A1NOU09TUwAi9/AAfxQeJAwiDFQEACIsDCIMVAQQLzIDU1tTXFQEEC51AAEpYQf38AB/FB8EKToDU2VhUAQtMANTaFNpVAQAIBArCCw6A1NvU3BUBPfwAH8UIBAnMgNTdFN1U3sAIiEMACADJwMiVAQAIikMYAEAIAEn9/AAfxQhAyZgHgEkAyIAIAMvAy0DLgMwUiBRJwAgLBElEQAhJBH38AB/FCItEQAjJB8rHyEfIB8mHiUeJB4jHiIeIB4vHSYdLR0sHffwAH8UIwMcYB8BGwAIACIoDGATACUBEmEIAREAIAMWAxcoGGAB9/AAfxQkDyZgGAwmOgNUNlQ3VDoDJmAeASQACH9/f39/f39/f3/38AB/FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPc="
 };
         
+        // ORIGINAL FIRMWARE (if available)
+        const ORIGINAL_FIRMWARE = "8AB/FAFRcH9/f39/f2MAUXh/fxEnOgNQCwAIYXkAAAAAAAAAAPfwAH8UAgAAAAAAAAAAAAAAAAAAAAB9fzoDUAwAAAAAAAAAAAAA9/AAfxQDAAAAAAAAAAAAAAAAAAAAABcnUAsACAAgKRElEQAhIRH38AB/FAQtEQAjJB8rHyEfIB8mHiUeJB4jHiIeIB4vHSYdLR0sHffwAH8UBQMcYB8BGwAIYHoAIQEZYCABDAAjAwwAIAMMACIvHSod9/AAfxQGLwsuCwAhJRUjFSIVKRUoFS0LIgsAICcYJhgtGCQYIxj38AB/FAciGCEYAxYDFyARACEoEQAgKBgAJSsTIhMpEyATACEqEffwAH8UCAAiLAxhSAAgASdABwAiJAxhSAAgASdABwAiLAxhSAAg9/AAfxQJASdABwAiJAxAKwAgAyUDJhEgMgNRCAMgAycRIzIDFSf38AB/FAoDKBEnMgMVKDgoURgAIiwMACAwKFEdACIkDAAgESEyA/fwAH8UC1EzAycRJDIDFScDKBEnMgMVKDgoUS0AIioMACAwKFE19/AAfxQMACIiDFE1ACIiDAAgESM6AwcjESQ6AwckECZ1AAEnYQD38AB/FA0EJzoDUUVgAAQlOANRWhAleAAQJjADOgM3JlFTESUyA/fwAH8UDgcmByVRCDsMUQhhfwElAyYHJlEIMwxRCBEhMgNRZAAi9/AAfxQPIQwAIAMhUWwAIikMYAEAIAEhAyJgHgEkYDIBJQMmUQj38AB/FBAAIAMgAyEDIgMjAyRjAFBEOgtSAGAFACABFWABASAiC/fwAH8UEQAgOhFSBwAiIAwAICIROBFSCyAYIBE9EQAJACMQGQAg9/AAfxQSAS0QLXV4MgNSH3QCMgNST3QBMgNST3QHMgNSWFJcACL38AB/FBMoDAAgMBhSKWEIAStgEwEsUjkgGBAXASoDLwMpEBYJKffwAH8UFBApAS4QKgEvbS8YLgErEC8BLBAsACUBEgAgECsAJQER9/AAfxQVACADFgMXKBgVIhAidBg6A1JMAyJgHgEkYAEBI1JcACL38AB/FBYpDAAgAyJgAQEhYB4BJFJcACIhDAAgAyElEQAJf39/f/fwAH8UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9w==";
+        
         // State
         let currentBPM = 120;
         
@@ -581,6 +748,7 @@
         const loadedCount = document.getElementById('loadedCount');
         const downloadBtn = document.getElementById('downloadBtn');
         const availability = document.getElementById('availability');
+        const restoreBtn = document.getElementById('restoreBtn');
         
         // Calculate timings
         function calculateTimings(bpm) {
@@ -661,6 +829,37 @@
                 downloadBtn.classList.remove('downloading');
             }, 2000);
         });
+        
+        // Restore button handler
+        if (restoreBtn && ORIGINAL_FIRMWARE) {
+            restoreBtn.addEventListener('click', () => {
+                restoreBtn.textContent = 'DOWNLOADING...';
+                restoreBtn.classList.add('downloading');
+                
+                // Convert base64 to binary
+                const binaryString = atob(ORIGINAL_FIRMWARE);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // Create download
+                const blob = new Blob([bytes], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'synchole-original-v3.0.syx';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                // Success feedback
+                restoreBtn.textContent = '✓ DOWNLOADED!';
+                setTimeout(() => {
+                    restoreBtn.textContent = 'DOWNLOAD ORIGINAL v3.0';
+                    restoreBtn.classList.remove('downloading');
+                }, 2000);
+            });
+        }
         
         // Initialize
         loadedCount.textContent = Object.keys(FIRMWARES).length;
