@@ -11,12 +11,26 @@ from pathlib import Path
 # Paths
 SCRIPT_DIR = Path(__file__).parent
 BPM_BUILDS_DIR = SCRIPT_DIR / "bpm-builds"
+ORIGINAL_FIRMWARE = SCRIPT_DIR / "synchole-original-v3.0.syx"
 OUTPUT_HTML = SCRIPT_DIR / "synchole-complete.html"
 
 print("=" * 50)
 print("  SYNCHOLE Firmware Embedder")
 print("=" * 50)
 print()
+
+# Read original firmware (if exists)
+original_firmware_b64 = None
+if ORIGINAL_FIRMWARE.exists():
+    with open(ORIGINAL_FIRMWARE, 'rb') as f:
+        data = f.read()
+        original_firmware_b64 = base64.b64encode(data).decode('ascii')
+        print(f"✓ Original firmware found: v3.0 ({len(data)} bytes)")
+        print()
+else:
+    print("⚠ Original firmware not found (synchole-original-v3.0.syx)")
+    print("  Skipping restore option")
+    print()
 
 # Read all .syx files
 firmwares = {}
@@ -27,7 +41,7 @@ if not syx_files:
     print("   Run ./build-comprehensive-library.sh first!")
     exit(1)
 
-print(f"Found {len(syx_files)} firmware files:")
+print(f"Found {len(syx_files)} BPM firmware files:")
 for syx_file in syx_files:
     # Extract BPM from filename
     bpm = syx_file.stem.replace("synchole-", "").replace("bpm", "")
@@ -40,7 +54,7 @@ for syx_file in syx_files:
         print(f"  ✓ {bpm} BPM ({len(data)} bytes)")
 
 print()
-print(f"Total firmwares embedded: {len(firmwares)}")
+print(f"Total BPM firmwares embedded: {len(firmwares)}")
 print()
 
 # Create HTML with embedded firmwares
@@ -309,6 +323,157 @@ html_content = '''<!DOCTYPE html>
         }
         
         .downloading { animation: pulse 1s infinite; }
+        
+        .restore-section {
+            background: rgba(255,0,0,0.05);
+            border: 2px solid rgba(255,0,0,0.3);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .restore-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .restore-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .restore-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .restore-btn {
+            padding: 20px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(255,183,0,0.2);
+            color: var(--accent-amber);
+            border: 2px solid var(--accent-amber);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .restore-btn:hover {
+            background: var(--accent-amber);
+            color: var(--bg-dark);
+            transform: translateY(-2px);
+        }
+        
+        .restore-btn:disabled {
+            background: var(--border);
+            color: var(--text-secondary);
+            border-color: var(--border);
+            cursor: not-allowed;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .control-section {
+                padding: 25px;
+            }
+            
+            .bpm-display {
+                font-size: 4rem;
+            }
+            
+            .bpm-label {
+                font-size: 0.75rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .download-btn, .restore-btn {
+                padding: 20px;
+                font-size: 1rem;
+            }
+            
+            .info-text {
+                font-size: 0.75rem;
+            }
+            
+            .restore-section {
+                padding: 20px;
+            }
+            
+            .restore-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .panel {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            
+            .control-section {
+                padding: 20px;
+            }
+            
+            .bpm-display {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            
+            .bpm-slider::-webkit-slider-thumb {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .bpm-slider::-moz-range-thumb {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .download-btn, .restore-btn {
+                padding: 15px;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -318,6 +483,19 @@ html_content = '''<!DOCTYPE html>
                 <h1>SYNCHOLE</h1>
                 <div class="subtitle">Firmware Library v1.0</div>
             </div>
+            
+            ''' + ('''<div class="restore-section" id="restoreSection">
+                <div class="restore-icon">⚠️</div>
+                <div class="restore-title">Restore Original Firmware</div>
+                <div class="restore-text">
+                    This page contains modified firmware with internal clock mode.<br>
+                    Click below to download the original SYNCHOLE firmware v3.0.
+                </div>
+                <button class="restore-btn" id="restoreBtn">
+                    DOWNLOAD ORIGINAL v3.0
+                </button>
+            </div>
+            ''' if original_firmware_b64 else '') + '''
             
             <div class="control-section">
                 <div class="bpm-display" id="bpmDisplay">120</div>
@@ -375,6 +553,9 @@ html_content = '''<!DOCTYPE html>
         // EMBEDDED FIRMWARES (base64 encoded)
         const FIRMWARES = ''' + json.dumps(firmwares, indent=8) + ''';
         
+        // ORIGINAL FIRMWARE (if available)
+        const ORIGINAL_FIRMWARE = ''' + (f'"{original_firmware_b64}"' if original_firmware_b64 else 'null') + ''';
+        
         // State
         let currentBPM = 120;
         
@@ -386,6 +567,7 @@ html_content = '''<!DOCTYPE html>
         const loadedCount = document.getElementById('loadedCount');
         const downloadBtn = document.getElementById('downloadBtn');
         const availability = document.getElementById('availability');
+        const restoreBtn = document.getElementById('restoreBtn');
         
         // Calculate timings
         function calculateTimings(bpm) {
@@ -466,6 +648,37 @@ html_content = '''<!DOCTYPE html>
                 downloadBtn.classList.remove('downloading');
             }, 2000);
         });
+        
+        // Restore button handler
+        if (restoreBtn && ORIGINAL_FIRMWARE) {
+            restoreBtn.addEventListener('click', () => {
+                restoreBtn.textContent = 'DOWNLOADING...';
+                restoreBtn.classList.add('downloading');
+                
+                // Convert base64 to binary
+                const binaryString = atob(ORIGINAL_FIRMWARE);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // Create download
+                const blob = new Blob([bytes], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'synchole-original-v3.0.syx';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                // Success feedback
+                restoreBtn.textContent = '✓ DOWNLOADED!';
+                setTimeout(() => {
+                    restoreBtn.textContent = 'DOWNLOAD ORIGINAL v3.0';
+                    restoreBtn.classList.remove('downloading');
+                }, 2000);
+            });
+        }
         
         // Initialize
         loadedCount.textContent = Object.keys(FIRMWARES).length;

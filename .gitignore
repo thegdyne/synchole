@@ -20,7 +20,7 @@ dist/
 *.cmf
 
 # Generated SysEx files
-*.syx
+bpm-builds/*.syx
 
 # OS files
 .DS_Store
